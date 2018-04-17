@@ -11,7 +11,7 @@ using namespace std;
 #include <fstream>
 #include <bits/stdc++.h>
 #include <list>
-#define MAX_NODES 100
+#define MAX_NODES 200
 
 /* Mapping of directions to integers */
 enum direction{None, N, NE, E, SE, S, SW, W, NW};
@@ -34,7 +34,6 @@ struct Node {
 /* Given a dash-delimited string with color and direction,
    return the color */
 int getColor(string s) {
-  size_t pos = s.find("-");
   string s_color = s.substr(0, 1);
 
   if (s_color == "B")
@@ -87,8 +86,7 @@ string getDirString(int e) {
     return "S";
   if (e == W)
    return "W";
-  if (e == None)
-   return "";
+  return "";
 }
 
 /* Given a matrix of nodes, create the directed edges between
@@ -244,11 +242,15 @@ int getDistance(struct Node *node1, struct Node *node2) {
    input*/
 int main(int argc, char* argv[]) {
   int rows, columns;
+  int dir_int, dist;
+   
+  string dir_string;
   string next;
+  string output_file = "output.txt";
+
   ifstream infile;
   ofstream outfile;
-  int dir_int, dist;
-  string dir_string;
+  
   Node *node1, *node2;
   list <Node*> list;
 
@@ -261,7 +263,7 @@ int main(int argc, char* argv[]) {
 
   // Open file
   string name_of_file = argv[1]; 
-  infile.open(name_of_file);
+  infile.open(name_of_file.c_str());
 
   // Create a graph with file content
   if (infile.is_open()) { 
@@ -274,7 +276,7 @@ int main(int argc, char* argv[]) {
     // Populate nodes in the matrix with color and direction info
     for (int i=0; i < rows; i++) {
       for (int j=0; j < columns; j++) {
-        struct Node* n = (struct Node*)malloc(sizeof(struct Node));
+        struct Node* n = new Node; 
         infile >> next;
         n->color = getColor(next);
         n->dir = getDir(next);
@@ -282,7 +284,7 @@ int main(int argc, char* argv[]) {
         n->x = i;
         n->y = j;
         n->visited = 0;
-	n->parent = NULL;
+        n->parent = NULL;
         graph[i][j] = *n;
       }
     }
@@ -294,7 +296,7 @@ int main(int argc, char* argv[]) {
     list = DFS(&graph[0][0]);
 
     // Write output to a file
-    outfile.open("output.txt");
+    outfile.open(output_file.c_str());
     for (std::list<Node*>::iterator it = list.begin(); it != list.end();) {
       // Get next node of path
       node1 = (*it);
