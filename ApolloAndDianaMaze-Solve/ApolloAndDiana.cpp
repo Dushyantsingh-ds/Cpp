@@ -26,8 +26,8 @@ struct Node {
   int x;
   int y;
   string text;
-  int visited = 0;
-  struct Node* parent = NULL;
+  int visited;
+  struct Node* parent;
   vector<Node*> neighbors;
 };
 
@@ -281,6 +281,8 @@ int main(int argc, char* argv[]) {
         n->text = next;
         n->x = i;
         n->y = j;
+        n->visited = 0;
+	n->parent = NULL;
         graph[i][j] = *n;
       }
     }
